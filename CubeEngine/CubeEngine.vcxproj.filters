@@ -4,6 +4,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="CubeEngine.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="IScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
