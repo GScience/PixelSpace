@@ -1,10 +1,10 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
 #include <atomic>
 
-class Scene;
+class IScene;
 
 /*!
 包含了与程序有关的基本操作. 
@@ -39,23 +39,19 @@ private:
 	//!创建窗体@param isFullscreen 是否希望以全屏形式显示
 	void createWindow(bool isFullscreen);
 
-	//!刷新线程主函数
-	void refrestEventMain();
+	//!刷新线程主函数@param exitFlag 是否返回
+	void refrestEventMain(std::atomic_bool& shouldExit);
 
 	//!程序的初始化，由子类实现
 	virtual void init() = 0;
 
-protected:
+public:
 	//!设置窗体名称@param c 新的窗口名称
-	void setWindowTitle(const char* c);
-
-	//!设置窗体大小@param w 窗体宽度@param h 窗体高度
-	void setWindowSize(int w, int h);
+	void setWindowTitle(const char* c) { glfwSetWindowTitle(mWindow, mWindowTitle = c); }
 
 	//!切换到指定的Scene
-	void switchToScene(Scene* scene);
+	void switchToScene(IScene* scene);
 
-public:
 	/*!
 	调用此函数后，整个程序开始运行
 	@note 调用run()后，会进入主循环，只有当窗口被关闭时才能退出
@@ -63,6 +59,9 @@ public:
 	@param argv 程序启动参数
 	*/
 	void run(int argc, char* argv[]);
+
+	//!获取按键状态
+	bool isKeyDown(int key) { return mKeys[key]; }
 
 	//!获取单例@return Application引用
 	static Application& getInstance() { return *mInstance; }

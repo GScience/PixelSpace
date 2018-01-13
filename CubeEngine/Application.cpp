@@ -1,9 +1,9 @@
 
 #include "Application.h"
+#include <thread>
 #include <functional>
 #include <stdexcept>
-#include <GL/glew.h>
-#include <GLFW\glfw3.h>
+#include <iostream>
 
 Application* Application::mInstance = nullptr;
 
@@ -42,12 +42,48 @@ void Application::createWindow(bool isFullscreen)
 	});
 }
 
+void Application::refrestEventMain(std::atomic_bool& shouldExit)
+{
+	double lastRefreshTime = glfwGetTime();
+	double tickTime = 0;
+
+	//事件主循环
+	while (!shouldExit)
+	{
+		double nowTime;
+		double passedTime;
+
+		//等待
+		while ((passedTime = (nowTime = glfwGetTime()) - lastRefreshTime) < 0.05)
+			std::this_thread::sleep_for
+			(
+				std::chrono::milliseconds(1)
+			);
+
+		tickTime += passedTime * 20;
+		if (static_cast<int>(tickTime) % 20 == 0)
+			std::cout << "[" << static_cast<int>(lastRefreshTime) << "]tick!" << static_cast<int>(tickTime) / 20 << std::endl;
+
+		lastRefreshTime = nowTime;
+	}
+}
+
 void Application::run(int argc, char* argv[])
 {
+	//创建窗体
 	glfwInit();
 	createWindow(mIsFullscreen);
 	glewInit();
 
+	//启动事件线程
+	std::atomic_bool shouleEventThreadEnd = false;
+	
+	std::thread eventThread([&]
+	{
+		refrestEventMain(shouleEventThreadEnd);
+	});
+
+	//主循环
 	while (!glfwWindowShouldClose(mWindow))
 	{
 		//简单的渲染
@@ -71,5 +107,7 @@ void Application::run(int argc, char* argv[])
 	}
 
 	//结束
+	shouleEventThreadEnd = true;
+	eventThread.join();
 	glfwTerminate();
 }
