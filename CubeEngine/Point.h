@@ -4,20 +4,20 @@
 template <class type, int n> class Point
 {
 private:
-	type data[n];
+	type mData[n];
 
 public:
-	type getX() const { return data[0]; }
-	type getY() const { return data[1]; }
-	type getZ() const { return data[2]; }
+	type getX() const { return mData[0]; }
+	type getY() const { return mData[1]; }
+	type getZ() const { return mData[2]; }
 
-	type get(int i) const { return data[i]; }
+	type get(const int i) const { return mData[i]; }
 
-	void setX(type& d) { data[0] = d; }
-	void setY(type& d) { data[1] = d; }
-	void setZ(type& d) { data[2] = d; }
+	void setX(type& d) { mData[0] = d; }
+	void setY(type& d) { mData[1] = d; }
+	void setZ(type& d) { mData[2] = d; }
 
-	void set(int i, type& d) { data[i] = d; }
+	void set(const int i, type& d) { mData[i] = d; }
 };
 
 using Point3D = Point<double, 3>;

@@ -1,13 +1,12 @@
 
 #include "Application.h"
 #include <thread>
-#include <functional>
 #include <stdexcept>
 #include <iostream>
 
 Application* Application::mInstance = nullptr;
 
-void Application::createWindow(bool isFullscreen)
+void Application::createWindow(bool const isFullscreen)
 {
 	//禁止调整窗体大小
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -15,15 +14,15 @@ void Application::createWindow(bool isFullscreen)
 	//根据是否全屏设置不同的Window Hint和monitor
 	if (isFullscreen)
 	{
-		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		const auto monitor = glfwGetPrimaryMonitor();
+		const auto mode = glfwGetVideoMode(monitor);
 
 		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
 		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
 		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-		mWindow = glfwCreateWindow(mode->width, mode->height, mWindowTitle, monitor, NULL);
+		mWindow = glfwCreateWindow(mode->width, mode->height, mWindowTitle, monitor, nullptr);
 	}
 	else
 		mWindow = glfwCreateWindow(1024, 768, mWindowTitle, nullptr, nullptr);
@@ -38,13 +37,13 @@ void Application::createWindow(bool isFullscreen)
 	glfwSetKeyCallback(mWindow, 
 		[](GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		Application::getInstance().mKeys[key] = action != GLFW_RELEASE;
+		getInstance().mKeys[key] = action != GLFW_RELEASE;
 	});
 }
 
 void Application::refrestEventMain(std::atomic_bool& shouldExit)
 {
-	double lastRefreshTime = glfwGetTime();
+	auto lastRefreshTime = glfwGetTime();
 	double tickTime = 0;
 
 	//事件主循环
@@ -107,7 +106,14 @@ void Application::run(int argc, char* argv[])
 	}
 
 	//结束
+	// ReSharper disable CppAssignedValueIsNeverUsed
 	shouleEventThreadEnd = true;
+	// ReSharper restore CppAssignedValueIsNeverUsed
 	eventThread.join();
 	glfwTerminate();
+}
+
+void Application::switchToScene(IScene* scene)
+{
+	
 }
