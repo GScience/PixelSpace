@@ -5,6 +5,8 @@
     <ClInclude Include="CubeEngine.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="Buffer.h" />
+    <ClInclude Include="OpenGL.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,10 +6,10 @@
 
 class IScene;
 
-/*!
+/*!Application类
  * 包含了与程序有关的基本操作. 
  * 需要调用其中的方法run()来启动整个程序。
-*/
+ */
 class Application
 {
 	//!Application单例
