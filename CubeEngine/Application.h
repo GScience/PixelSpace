@@ -3,8 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <atomic>
-
-class IScene;
+#include "IScene.h"
 
 /*!Application类
  * 包含了与程序有关的基本操作. 
@@ -55,7 +54,7 @@ public:
 	void setWindowTitle(const char* c) { glfwSetWindowTitle(mWindow, mWindowTitle = c); }
 
 	//!切换到指定的Scene
-	void switchToScene(IScene* scene);
+	void switchToScene(ISceneObj scene);
 
 	/*!
 	 * 调用此函数后，整个程序开始运行

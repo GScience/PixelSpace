@@ -169,12 +169,15 @@
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="IScene.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="VAO.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

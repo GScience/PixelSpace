@@ -1,5 +1,6 @@
 
 #include "Application.h"
+#include "OpenGL.h"
 #include <thread>
 #include <stdexcept>
 #include <iostream>
@@ -82,18 +83,40 @@ void Application::run(int argc, char* argv[])
 		refrestEventMain(shouleEventThreadEnd);
 	});
 
+	ShaderInfo shaders[] = 
+	{ 
+		{ GL_VERTEX_SHADER, "test.vert" },
+		{ GL_FRAGMENT_SHADER,"test.frag" },
+		{GL_NONE,nullptr}
+	};
+	GLfloat testVertices[6][2] =
+	{
+		{-0.9,-0.9},
+		{0.85,-0.9},
+		{-0.9,0.85},
+		{0.9,-0.85},
+		{0.9,0.9},
+		{-0.85,0.9},
+	};
+	auto testShader = Shader::genShader(shaders);
+	auto testVAO = VAO::genVAO();
+	auto testBuffer = Buffer::genBuffer(ArrayBuffer);
+	Ogl::bindVertexArray(testVAO);
+	Ogl::bindBuffer(testBuffer);
+	testBuffer.copyFrom(testVertices, sizeof(testVertices));
+	Ogl::useShader(testShader);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+	glEnableVertexAttribArray(0);
+
 	//主循环
 	while (!glfwWindowShouldClose(mWindow))
 	{
 		//简单的渲染
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glBegin(GL_TRIANGLES);
+		
+		Ogl::bindVertexArray(testVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		glVertex2f(0.0f, 0.0f);
-		glVertex2f(0.0f, 1.0f);
-		glVertex2f(1.0f, 1.0f);
-
-		glEnd();
 		glfwSwapBuffers(mWindow);
 		glfwPollEvents();
 
@@ -113,7 +136,7 @@ void Application::run(int argc, char* argv[])
 	glfwTerminate();
 }
 
-void Application::switchToScene(IScene* scene)
+void Application::switchToScene(ISceneObj scene)
 {
 	
 }

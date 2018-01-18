@@ -7,6 +7,7 @@
  */
 enum BufferTarget
 {
+	UnknownBuffer = -1,
 	ArrayBuffer = GL_ARRAY_BUFFER,
 	CopyReadBuffer = GL_COPY_READ_BUFFER,
 	CopyWriteBuffer = GL_COPY_WRITE_BUFFER,
@@ -29,6 +30,24 @@ class Buffer final
 	Buffer(const BufferTarget target, const GLuint bufferName) :target(target), bufferName(bufferName) {}
 
 public:
+	//!绑定目标
+	const BufferTarget target;
+	//!缓冲区名称
+	const GLuint bufferName;
+
+	//!两个Buffer是否一样@param buffer 需要比较的Buffer
+	bool equal(const Buffer& buffer) const
+	{
+		return buffer.bufferName == bufferName && 
+			buffer.target == target;
+	}
+	
+	//!空Buffer
+	static Buffer emptyBuffer()
+	{
+		return { UnknownBuffer, 0 };
+	}
+
 	//!创建Buffer
 	static Buffer genBuffer(const BufferTarget target)
 	{
@@ -37,18 +56,16 @@ public:
 		return { target, bufferName };
 	}
 
-	//!绑定目标
-	const BufferTarget target;
-
-	//!缓冲区名称
-	const GLuint bufferName;
-
 	/*!复制数据到buffer
 	 * @param data 需要被复制的数据
 	 * @param size 数据的大小
 	 * @note data应由
 	 */
-	void copyFrom(void* data, size_t size);
+	void copyFrom(void* data, const size_t size) const
+	{
+		glBindBuffer(target, bufferName);
+		glBufferData(target, size, data, GL_STATIC_DRAW);
+	}
 
 	//!清空缓冲区内的数据
 	void clear();
