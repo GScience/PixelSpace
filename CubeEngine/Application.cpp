@@ -83,30 +83,27 @@ void Application::run(int argc, char* argv[])
 		refrestEventMain(shouleEventThreadEnd);
 	});
 
-	ShaderInfo shaders[] = 
-	{ 
-		{ GL_VERTEX_SHADER, "test.vert" },
-		{ GL_FRAGMENT_SHADER,"test.frag" },
-		{GL_NONE,nullptr}
-	};
 	GLfloat testVertices[6][2] =
 	{
-		{-0.9,-0.9},
-		{0.85,-0.9},
-		{-0.9,0.85},
-		{0.9,-0.85},
-		{0.9,0.9},
-		{-0.85,0.9},
+		{-0.9f,-0.9f},
+		{0.85f,-0.9f},
+		{-0.9f,0.85f},
+		{0.9f,-0.85f},
+		{0.9f,0.9f},
+		{-0.85f,0.9f},
 	};
-	auto testShader = Shader::genShader(shaders);
-	auto testVAO = VAO::genVAO();
-	auto testBuffer = Buffer::genBuffer(ArrayBuffer);
-	Ogl::bindVertexArray(testVAO);
-	Ogl::bindBuffer(testBuffer);
+	const auto testShader = ogl::Shader::genShader(
+		{
+			{ GL_VERTEX_SHADER, "test.vert" },
+			{ GL_FRAGMENT_SHADER,"test.frag" },
+			{ GL_NONE,nullptr }
+		}
+	);
+	ogl::useShader(testShader);
+	const auto testVAO = ogl::VertexArrayObj::genVertexArrayObj();
+	const auto testBuffer = ogl::Buffer::genBuffer(GL_ARRAY_BUFFER);
 	testBuffer.copyFrom(testVertices, sizeof(testVertices));
-	Ogl::useShader(testShader);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-	glEnableVertexAttribArray(0);
+	testVAO.vertexAttribPointer(0, testBuffer, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 	//主循环
 	while (!glfwWindowShouldClose(mWindow))
@@ -114,8 +111,8 @@ void Application::run(int argc, char* argv[])
 		//简单的渲染
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-		Ogl::bindVertexArray(testVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		ogl::bindVertexArray(testVAO);
+		ogl::drawVertexArray(testVAO, GL_TRIANGLES, 0, 6);
 
 		glfwSwapBuffers(mWindow);
 		glfwPollEvents();
@@ -136,7 +133,7 @@ void Application::run(int argc, char* argv[])
 	glfwTerminate();
 }
 
-void Application::switchToScene(ISceneObj scene)
+void Application::switchToScene(ISceneObj)
 {
 	
 }

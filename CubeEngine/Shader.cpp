@@ -1,30 +1,32 @@
 
 #define _CRT_SECURE_NO_WARNINGS
-#include "Shader.h"
+#include "OpenGL.h"
 #include <iostream>
+#include <fstream>
+
+using namespace ogl;
 
 const char* readShader(const char* fileName)
 {
-	std::string fullFileName = std::string("resources\\shader\\") + fileName;
+	const auto fullFileName = std::string("resources\\shader\\") + fileName;
 
 	//读取文件
-	auto infile = fopen(fullFileName.c_str(), "rb");
+	auto infile = std::ifstream(fullFileName, std::ios::binary);
 
 	//是否读取
 	if (!infile)
 		return nullptr;
 
 	//设置读取位置
-	fseek(infile, 0, SEEK_END);
-	const int len = ftell(infile);
-	fseek(infile, 0, SEEK_SET);
+	infile.seekg(0, std::ios::end);
+	const auto len = static_cast<size_t>(infile.tellg());
+	infile.seekg(0, std::ios::beg);
 
 	//读取数据
 	const auto source = new GLchar[len + 1];
 
 	//读取并关闭
-	fread(source, 1, len, infile);
-	fclose(infile);
+	infile.read(source, len);
 
 	//最后处理
 	source[len] = 0;
@@ -33,17 +35,17 @@ const char* readShader(const char* fileName)
 	return const_cast<const GLchar*>(source);
 }
 
-Shader Shader::genShader(ShaderInfo shaders[])
+Shader Shader::genShader(std::vector<ShaderInfo> shaders)
 {
 	//检测是否为空
-	if (shaders == nullptr)
-		return Shader(0);;
+	if (shaders.empty())
+		return Shader(0);
 
 	//创建着色器程序
 	const auto program = glCreateProgram();
 
-	auto entry = shaders;
-
+	auto entry = shaders.begin();
+	
 	//循环编译着色器
 	while (entry->type != GL_NONE)
 	{
@@ -57,7 +59,7 @@ Shader Shader::genShader(ShaderInfo shaders[])
 		if (source == nullptr)
 		{
 			//删除Shader
-			for (entry = shaders; entry->type != GL_NONE; ++entry)
+			for (entry = shaders.begin(); entry->type != GL_NONE; ++entry)
 				glDeleteShader(shader);
 		}
 
@@ -79,7 +81,7 @@ Shader Shader::genShader(ShaderInfo shaders[])
 			GLsizei len;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
 
-			GLchar* log = new GLchar[len + 1];
+			const auto log = new GLchar[len + 1];
 			glGetShaderInfoLog(shader, len, &len, log);
 			std::cerr << "[ERROR]Shader compilation failed: " << log << std::endl;
 			delete[] log;
@@ -101,7 +103,7 @@ Shader Shader::genShader(ShaderInfo shaders[])
 		GLsizei len;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 
-		GLchar* log = new GLchar[len + 1];
+		const auto log = new GLchar[len + 1];
 		glGetProgramInfoLog(program, len, &len, log);
 		std::cerr << "[ERROR]Shader linking failed: " << log << std::endl;
 		delete[] log;

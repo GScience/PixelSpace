@@ -5,16 +5,7 @@
     <ClInclude Include="CubeEngine.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="IScene.h" />
-    <ClInclude Include="Buffer.h">
-      <Filter>Graph</Filter>
-    </ClInclude>
     <ClInclude Include="OpenGL.h">
-      <Filter>Graph</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Graph</Filter>
-    </ClInclude>
-    <ClInclude Include="VAO.h">
       <Filter>Graph</Filter>
     </ClInclude>
   </ItemGroup>
@@ -24,6 +15,12 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Shader.cpp">
+      <Filter>Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="VAO.cpp">
+      <Filter>Graph</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL.cpp">
       <Filter>Graph</Filter>
     </ClCompile>
   </ItemGroup>
